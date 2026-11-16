@@ -1,0 +1,20 @@
+{
+  "name": "fluxograma-jogo",
+  "version": "1.0.0",
+  "description": "Fluxogramas do jogo Nitro Horizon em PNG + Mermaid: sistema escolar e logica do jogo.",
+  "main": "tools/make-flowcharts.cjs",
+  "scripts": {
+    "gerar": "node tools/make-flowcharts.cjs",
+    "verificar": "node tools/check-flowcharts.cjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/renatinkkjk/fluxograma-jogo.git"
+  },
+  "author": "renatinkkjk",
+  "license": "MIT",
+  "type": "commonjs",
+  "devDependencies": {
+    "jimp": "^0.22.12"
+  }
+}

@@ -1,17 +1,152 @@
-# 🎮 Fluxograma — Nitro Horizon
+# 🎮 Fluxogramas — Nitro Horizon
 
-Documentação visual de **todo o fluxo do jogo**: telas, transições de estado, menu de
-pausa, modo história e o ciclo da corrida.
+Documentação visual de **dois sistemas** com fluxogramas:
+
+1. **Sistema escolar** — autenticação, menu principal, funcionalidades e encerramento
+2. **Lógica do jogo Nitro Horizon** — início, ações do jogador, decisões, vitória/derrota e encerramento
 
 Jogo: **https://renatinkkjk.github.io/nitro-horizon/**
-Repositório do jogo: **https://github.com/renatinkkjk/nitro-horizon**
+Código do jogo: **https://github.com/renatinkkjk/nitro-horizon**
 
 ---
 
-## 1. Mapa geral das telas
+## 📸 Os fluxogramas em imagem
 
-O jogo é uma máquina de estados finita. Cada bloco abaixo é uma tela
-(`state`) do `src/game.ts`.
+### 1. Sistema escolar
+
+![Fluxograma do sistema escolar](docs/fluxograma-sistema-escolar.png)
+
+**Arquivo:** [`docs/fluxograma-sistema-escolar.png`](docs/fluxograma-sistema-escolar.png)
+
+### 2. Lógica do jogo (Nitro Horizon)
+
+![Fluxograma da lógica do jogo](docs/fluxograma-jogo.png)
+
+**Arquivo:** [`docs/fluxograma-jogo.png`](docs/fluxograma-jogo.png)
+
+---
+
+## 🔷 Símbolos usados (notação padrão)
+
+| Símbolo | Significado | Onde aparece |
+|---|---|---|
+| ⭕ **Oval** | Início / Fim | Início do programa, FIM |
+| ▭ **Retângulo** | Processo (ação) | Executar uma tarefa |
+| ◇ **Losango** | Decisão (condição) | "Credenciais válidas?", "Cruzou a linha?" |
+| ▱ **Paralelogramo** | Entrada / saída de dados | Login, escolha do jogador |
+| ➡️ **Seta** | Fluxo / caminho | SIM, NÃO, HISTÓRIA... |
+
+---
+
+## 1️⃣ Fluxograma — Sistema escolar
+
+```mermaid
+flowchart TD
+    A([INÍCIO]) --> B[/Entrar com usuário e senha/]
+    B --> C{Credenciais válidas?}
+    C -->|NÃO| D[Mostrar "acesso negado" e pedir novo login]
+    D --> B
+    C -->|SIM| E[MENU PRINCIPAL]
+    E --> F{Qual módulo escolheu?}
+    F -->|1| G[MATRÍCULA: cadastrar / paginar]
+    F -->|2| H[NOTAS: lançar / consultar]
+    F -->|3| I[FINANCEIRO: emitir boleto / consultar]
+    F -->|4| J[Encerrar sessão (logout)]
+    G --> E
+    H --> E
+    I --> E
+    J --> K([FIM])
+
+    style A fill:#ffe6f0,stroke:#1c2340,color:#1c2340
+    style K fill:#ffe6f0,stroke:#1c2340,color:#1c2340
+    style C fill:#fff6d6,stroke:#1c2340,color:#1c2340
+    style F fill:#fff6d6,stroke:#1c2340,color:#1c2340
+    style B fill:#e4fff2,stroke:#1c2340,color:#1c2340
+```
+
+**Regras principais**
+
+- A **autenticação** acontece antes de qualquer menu.
+- Login inválido → mostra o aviso e **volta** para a tela de entrada.
+- Cada módulo do menu **devolve** o usuário ao Menu Principal.
+- **Só a opção "Sair"** encerra a sessão e chega ao FIM.
+
+### Resumo das etapas
+
+| Etapa | Símbolo | Descrição |
+|---|---|---|
+| 1 | Oval | Início |
+| 2 | Paralelogramo | Entrada: usuário e senha |
+| 3 | Losango | Credenciais válidas? |
+| 4 | Retângulo | Acesso negado → volta ao login |
+| 5 | Retângulo | Menu principal |
+| 6 | Losango | Qual módulo escolheu? |
+| 7 | Retângulo | Matrícula / Notas / Financeiro |
+| 8 | Retângulo | Encerrar sessão (logout) |
+| 9 | Oval | Fim |
+
+---
+
+## 2️⃣ Fluxograma — Lógica do jogo (Nitro Horizon)
+
+```mermaid
+flowchart TD
+    A([INÍCIO]) --> B[Carregar o jogo (tela inicial)]
+    B --> C{Modo de jogo?}
+    C -->|HISTÓRIA| D[Narrativa → escolher carro → 3 rodadas]
+    C -->|CORRIDA RÁPIDA| E[/Escolher carro e pista/]
+    D --> E
+    E --> F[Contagem regressiva 3-2-1]
+    F --> G[CORRIDA: acelerar, frear, nitro, olhar atrás]
+    G --> H{Cruzou a linha de chegada?}
+    H -->|NÃO| I{Tempo esgotou / perdeu demais?}
+    I -->|SIM| J[DERROTA: mostrar resultado]
+    I -->|NÃO| G
+    H -->|SIM| K[VITÓRIA! Mostrar resultado]
+    K --> L{Modo história?}
+    L -->|SIM| M[Somar pontos do campeonato (faltam rodadas?)]
+    M --> F
+    L -->|NÃO| N([FIM])
+    J --> N
+
+    style A fill:#ffe6f0,stroke:#1c2340,color:#1c2340
+    style N fill:#ffe6f0,stroke:#1c2340,color:#1c2340
+    style C fill:#fff6d6,stroke:#1c2340,color:#1c2340
+    style H fill:#fff6d6,stroke:#1c2340,color:#1c2340
+    style I fill:#fff6d6,stroke:#1c2340,color:#1c2340
+    style L fill:#fff6d6,stroke:#1c2340,color:#1c2340
+    style E fill:#e4fff2,stroke:#1c2340,color:#1c2340
+```
+
+**Regras principais**
+
+- O jogador escolhe o **modo**, o **carro** e a **pista**.
+- Durante a corrida: acelerar, frear, nitro (ESPAÇO) e olhar para trás (R).
+- **Cruzou a linha = VITÓRIA.** Tempo esgotou / perdeu demais = **DERROTA**.
+- No modo história os pontos somam e o campeonato continua até o fim.
+
+### Resumo das etapas
+
+| Etapa | Símbolo | Descrição |
+|---|---|---|
+| 1 | Oval | Início |
+| 2 | Retângulo | Carregar o jogo (tela inicial) |
+| 3 | Losango | Modo de jogo? (rápida / história) |
+| 4 | Paralelogramo | Escolher carro e pista |
+| 5 | Retângulo | Contagem regressiva 3-2-1 |
+| 6 | Retângulo | Corrida (ações do jogador) |
+| 7 | Losango | Cruzou a linha de chegada? |
+| 8 | Losango | Tempo esgotou / perdeu demais? |
+| 9 | Retângulo | Vitória / Derrota — mostrar resultado |
+| 10 | Losango | Modo história? (continuar campeonato) |
+| 11 | Oval | Fim |
+
+---
+
+## 🗺️ Mapa detalhado das telas do jogo
+
+O diagrama abaixo detalha **cada tela** do jogo (é a mesma máquina de estados
+implementada em `src/game.ts`):
 
 ```mermaid
 flowchart TD
@@ -49,7 +184,7 @@ flowchart TD
     style K fill:#ffd23f,stroke:#0b0d17,color:#0b0d17
 ```
 
-### Resumo das transições
+### Transições
 
 | De | Para | Controle |
 |---|---|---|
@@ -69,94 +204,7 @@ flowchart TD
 | `story` | `race` | ENTER (próxima rodada) |
 | `story` / `storyEnd` | `title` | ESC |
 
----
-
-## 2. Menu principal (TITLE)
-
-```mermaid
-flowchart LR
-    T[TITLE] -->|↑ ↓| T
-    T -->|ENTER| M1[0 · CORRIDA RÁPIDA]
-    T -->|ENTER| M2[1 · MODO HISTÓRIA · 3 CORRIDAS]
-    T -->|ENTER| M3[2 · COMO JOGAR]
-    T -->|ENTER| M4[3 · OPÇÕES]
-    T -->|F| FS([Tela cheia])
-    T -->|1º ENTER| AUDIO[Inicia o AudioContext<br/>+ trilha sonora]
-```
-
-> O primeiro ENTER também **destrava o áudio** (exigência dos navegadores) e
-> **liga a trilha sonora**.
-
----
-
-## 3. Modo história (campeonato)
-
-```mermaid
-flowchart TD
-    S0([MODO HISTÓRIA]) --> N1[NARRAÇÃO 1<br/>o CEPK decidiu organizar um<br/>campeonato de corrida...]
-    N1 -->|ENTER| N2[NARRAÇÃO 2<br/>... então você deve se provar ser<br/>o melhor e ganhar o campeonato<br/>kennedy!]
-    N2 -->|ENTER| ESC[ESCOLHER O CARRO<br/>vale para as 3 rodadas]
-    ESC -->|ENTER| R1[RODADA 1<br/>DESERTO · 5 voltas]
-    R1 --> RES1[RESULTADO + pontos]
-    RES1 -->|ENTER| CL1[CLASSIFICAÇÃO PARCIAL]
-    CL1 -->|ENTER| R2[RODADA 2<br/>LITORAL · 5 voltas]
-    R2 --> RES2[RESULTADO + pontos]
-    RES2 -->|ENTER| CL2[CLASSIFICAÇÃO PARCIAL]
-    CL2 -->|ENTER| R3[RODADA 3<br/>CIDADE · 4 voltas]
-    R3 --> RES3[RESULTADO + pontos]
-    RES3 -->|ENTER| FIM[CAMPEÃO<br/>classificação final]
-    FIM -->|ENTER / ESC| MENU[Menu principal]
-
-    style N1 fill:#1a1a2a,stroke:#ffd23f,color:#f2f4ff
-    style N2 fill:#1a1a2a,stroke:#ffd23f,color:#f2f4ff
-    style FIM fill:#ffd23f,stroke:#0b0d17,color:#0b0d17
-```
-
-**Pontuação do campeonato** (top 10 receiving points):
-
-| 1º | 2º | 3º | 4º | 5º | 6º | 7º | 8º | 9º | 10º |
-|---|---|---|---|---|---|---|---|---|---|
-| 15 | 12 | 10 | 8 | 6 | 5 | 4 | 3 | 2 | 1 |
-
-A cada rodada o jogador soma **pontos + posição**; o desempate usa a soma das
-posições obtidas.
-
----
-
-## 4. Dentro da corrida (RACE)
-
-```mermaid
-flowchart TD
-    C[COUNTDOWN<br/>3.8 s · 4 3 2 1 GO!] --> R[RACING<br/>motor do carro]
-    R -->|velocidade x nitro| R
-    R -->|ESPAÇO · nitro| N[NITRO ATIVO<br/>+35% de velocidade máxima<br/>chama no escapamento]
-    N -->|2,4 s| R
-    R -->|R · olhar para trás| LB[VISÃO TRASEIRA<br/>pista espelhada]
-    LB --> R
-    R -->|bater / bater na pista| CRASH[CRASH<br/>tremor de tela + som]
-    CRASH --> R
-    R -->|entra no pit lane| PIT[PIT STOP<br/>reabastece + recarrega TODOS os nitros]
-    PIT --> R
-    R -->|cruza a linha de chegada| F[FINISHED]
-    F --> RES([Tela de resultado])
-
-    style C fill:#ffd23f,stroke:#0b0d17,color:#0b0d17
-    style N fill:#22e0ff,stroke:#0b0d17,color:#0b0d17
-    style PIT fill:#3dff8b,stroke:#0b0b0b,color:#0b0d17
-```
-
-### Durante a corrida
-
-- **Fumaça nos pneus**: cresce com a velocidade e o quanto você está derrapando.
-- **Chama de nitro**: sai dos dois escapamentos enquanto o nitro está ativo.
-- **IA**: 14 adversários com habilidades diferentes, troca de faixa, respeita o
-  *rubber band* (se você está na frente eles aceleram, se está atrás eles freiam) e
-  faz *drafting* quando você gruda na traseira.
-- **Combustível**: se acabar, o carro fica com 55% da força.
-
----
-
-## 5. Menu de pausa (dentro da corrida)
+### Menu de pausa (dentro da corrida)
 
 ```mermaid
 flowchart LR
@@ -170,26 +218,13 @@ flowchart LR
     P4 --> R
 ```
 
-> Com o jogo pausado, a música abaixa para **30%** do volume.
+### Pontuação do campeonato (modo história)
 
----
+| 1º | 2º | 3º | 4º | 5º | 6º | 7º | 8º | 9º | 10º |
+|---|---|---|---|---|---|---|---|---|---|
+| 15 | 12 | 10 | 8 | 6 | 5 | 4 | 3 | 2 | 1 |
 
-## 6. Telas do menu
-
-| Tela | O que tem |
-|---|---|
-| **TITLE** | Logo, 4 opções de menu, mascote CEPK ao lado, botão de instalar o app |
-| **CAR** | Showroom com o carro em vista lateral + 4 cards (um por modelo) com atributos |
-| **TRACK** | 3 pistas (DESERTO, LITORAL, CIDADE) com dificuldade, voltas e o traçado |
-| **HELP** | Tabela de controles (teclado e toque) |
-| **OPTIONS** | Volume da **música** e dos **efeitos** (salvos no navegador) |
-| **RESULTS** | Posição, tempo total, melhor volta e pontos ganhos no campeonato |
-| **STORY** | Classificação parcial do campeonato entre as rodadas |
-| **STORY_END** | Classificação final e o campeão |
-
----
-
-## 7. Controles
+### Controles
 
 | Ação | Teclado | Toque |
 |---|---|---|
@@ -205,55 +240,23 @@ flowchart LR
 
 ---
 
-## 8. Fluxo em ASCII (para ver sem Mermaid)
+## 🛠️ Como as imagens foram geradas
 
-```
-                    ┌───────────┐
-                    │   TITLE   │◄──────────────┐
-                    └─────┬─────┘               │
-       ┌────────────┬─────┴─────┬────────────┐  │
-       ▼            ▼           ▼            ▼  │
-  ┌─────────┐  ┌───────────┐ ┌────────┐ ┌─────────┐
-  │   CAR   │  │STORY_INTRO│ │  HELP  │ │ OPTIONS │
-  └────┬────┘  └─────┬─────┘ └────┬───┘ └────┬────┘
-       │              │ (ENTER)   │          │
-       │            ┌───────────┐ │          │
-       │            │NARRAÇÃO 2 │ │          │
-       │            └─────┬─────┘ │          │
-       │ (ENTER)         │       │          │
-       ▼              (ENTER)     │          │
-  ┌────────┐            │         │          │
-  │  TRACK │◄───┐       │         │          │
-  └────┬───┘    │ESC    │         │          │
-       │        │       │         │          │
-   (ENTER)      │       │         │          │
-       ▼        │       │         │          │
-  ┌────────┐    │       │         │          │
-  │  RACE  │    │       │         │          │
-  └────┬───┘    │       │         │          │
-       │ fim    │       │         │          │
-       ▼        │       │         │          │
-  ┌─────────┐  │       │         │          │
-  │ RESULTS │  │       │         │          │
-  └────┬────┘  │       │         │          │
-       │        └───────┴─────────┴──────────┘
-   (ENTER)
-       ├──► TITLE
-       └──► STORY ──(ENTER)──► RACE ──► STORY_END ──► TITLE
+Os dois PNGs são desenhados por código (sem editor), em
+[`tools/make-flowcharts.cjs`](tools/make-flowcharts.cjs), usando **Jimp**:
+
+```bash
+npm install     # instala o jimp
+npm run gerar   # recria docs/*.png
 ```
 
----
+O script desenha cada símbolo na mão (oval, retângulo, losango, paralelogramo),
+as setas com ponta e o texto centralizado — por isso o resultado é sempre igual.
 
-## 9. Como este fluxo foi gerado
-
-O fluxograma espelha o código do jogo:
-
-- `src/game.ts` → tipo `GameState` e o `switch (this.state)` do `update()`/`render()`
-- `src/race/race.ts` → fases da corrida (`countdown` → `racing` → `finished`)
-- `src/ui/screens.ts` → o que cada tela desenha
-
-Diagrama em **Mermaid** (renderizado nativamente pelo GitHub) e uma versão em
-**ASCII** para leitura em qualquer lugar.
+| Arquivo | O que é |
+|---|---|
+| `tools/make-flowcharts.cjs` | Gera os dois fluxogramas em PNG |
+| `tools/check-flowcharts.cjs` | Confere as cores/símbolos de cada imagem |
 
 ---
 
