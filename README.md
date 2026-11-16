@@ -93,8 +93,8 @@ flowchart LR
 
 ```mermaid
 flowchart TD
-    S0([MODO HISTÓRIA]) --> N1[NARRAÇÃO 1<br/>"o CEPK decidiu organizar um<br/>campeonato de corrida..."]
-    N1 -->|ENTER| N2[NARRAÇÃO 2<br/>"... então você deve se provar ser<br/>o melhor e ganhar o campeonato<br/>kennedy!"]
+    S0([MODO HISTÓRIA]) --> N1[NARRAÇÃO 1<br/>o CEPK decidiu organizar um<br/>campeonato de corrida...]
+    N1 -->|ENTER| N2[NARRAÇÃO 2<br/>... então você deve se provar ser<br/>o melhor e ganhar o campeonato<br/>kennedy!]
     N2 -->|ENTER| ESC[ESCOLHER O CARRO<br/>vale para as 3 rodadas]
     ESC -->|ENTER| R1[RODADA 1<br/>DESERTO · 5 voltas]
     R1 --> RES1[RESULTADO + pontos]
@@ -127,7 +127,7 @@ posições obtidas.
 
 ```mermaid
 flowchart TD
-    C[COUNTDOWN<br/>3.8 s · "4 3 2 1 GO!"] --> R[RACING<br/>motor do carro]
+    C[COUNTDOWN<br/>3.8 s · 4 3 2 1 GO!] --> R[RACING<br/>motor do carro]
     R -->|velocidade x nitro| R
     R -->|ESPAÇO · nitro| N[NITRO ATIVO<br/>+35% de velocidade máxima<br/>chama no escapamento]
     N -->|2,4 s| R
