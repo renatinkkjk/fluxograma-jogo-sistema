@@ -1,0 +1,35 @@
+%%{init: {"theme": "base", "flowchart": {"curve": "linear", "nodeSpacing": 45, "rankSpacing": 60, "padding": 6, "htmlLabels": false, "useMaxWidth": true}, "themeVariables": {"fontFamily": "Arial", "fontSize": "15px", "lineColor": "#1f3a68", "edgeLabelBackground": "#ffffff"}}}%%
+flowchart TD
+    A([INÍCIO]) --> B[Abrir o jogo<br/>Tela inicial]
+    B --> C{Escolher modo}
+    C -->|HISTÓRIA| D[Narração da história<br/>Escolher o carro]
+    C -->|RÁPIDA| E[/Escolher carro e pista/]
+    D --> E
+    E --> F[Contagem regressiva<br/>3 - 2 - 1]
+    F --> G[CORRIDA<br/>Acelerar · Frear · Nitro ESPAÇO]
+    G --> H{Cruzou a linha<br/>de chegada?}
+    H -->|SIM| I[VITÓRIA<br/>Mostrar resultado]
+    H -->|NÃO| J{Tempo esgotou?}
+    J -->|SIM| K[DERROTA<br/>Mostrar resultado]
+    J -->|NÃO| G
+    I --> L{Modo história?}
+    L -->|SIM| M[Somar pontos do campeonato]
+    M --> F
+    L -->|NÃO| N([FIM])
+    K --> N
+
+    classDef inicio fill:#ffe6f0,stroke:#c2185b,stroke-width:2px,color:#6a1b3a
+    classDef processo fill:#eef2ff,stroke:#3949ab,stroke-width:1.5px,color:#1a237e
+    classDef decisao fill:#fff6d6,stroke:#f9a825,stroke-width:1.5px,color:#5d4037
+    classDef io fill:#e4fff2,stroke:#00897b,stroke-width:1.5px,color:#004d40
+    classDef corrida fill:#ffe6ee,stroke:#c2185b,stroke-width:2px,color:#880e4f
+    classDef resultado fill:#e8f5e9,stroke:#2e7d32,stroke-width:1.5px,color:#1b5e20
+    classDef derrota fill:#ffebee,stroke:#c62828,stroke-width:1.5px,color:#b71c1c
+
+    class A,N inicio
+    class B,D,F,M processo
+    class C,H,J,L decisao
+    class E io
+    class G corrida
+    class I resultado
+    class K derrota

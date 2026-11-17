@@ -42,33 +42,40 @@ Código do jogo: **https://github.com/renatinkkjk/nitro-horizon**
 
 ```mermaid
 flowchart TD
-    A([INÍCIO]) --> B[/Entrar com usuário e senha/]
+    A([INÍCIO]) --> B[/Digite usuário e senha/]
     B --> C{Credenciais válidas?}
-    C -->|NÃO| D[Mostrar "acesso negado" e pedir novo login]
+    C -->|NÃO| D[Mostrar acesso negado]
     D --> B
     C -->|SIM| E[MENU PRINCIPAL]
-    E --> F{Qual módulo escolheu?}
-    F -->|1| G[MATRÍCULA: cadastrar / paginar]
-    F -->|2| H[NOTAS: lançar / consultar]
-    F -->|3| I[FINANCEIRO: emitir boleto / consultar]
-    F -->|4| J[Encerrar sessão (logout)]
-    G --> E
-    H --> E
-    I --> E
-    J --> K([FIM])
+    E --> F{Escolher módulo}
+    F -->|1| G[MATRÍCULA<br/>Cadastrar aluno]
+    F -->|2| H[NOTAS<br/>Lançar e consultar]
+    F -->|3| I[FINANCEIRO<br/>Emitir boleto]
+    G --> R[Retornar ao menu]
+    H --> R
+    I --> R
+    R --> E
+    E -->|Sair| J[SAIR<br/>Encerrar sessão]
+    J --> L([FIM])
 
-    style A fill:#ffe6f0,stroke:#1c2340,color:#1c2340
-    style K fill:#ffe6f0,stroke:#1c2340,color:#1c2340
-    style C fill:#fff6d6,stroke:#1c2340,color:#1c2340
-    style F fill:#fff6d6,stroke:#1c2340,color:#1c2340
-    style B fill:#e4fff2,stroke:#1c2340,color:#1c2340
+    classDef inicio fill:#ffe6f0,stroke:#c2185b,stroke-width:2px,color:#6a1b3a
+    classDef processo fill:#eef2ff,stroke:#3949ab,stroke-width:1.5px,color:#1a237e
+    classDef decisao fill:#fff6d6,stroke:#f9a825,stroke-width:1.5px,color:#5d4037
+    classDef io fill:#e4fff2,stroke:#00897b,stroke-width:1.5px,color:#004d40
+    classDef saida fill:#ede7f6,stroke:#5e35b1,stroke-width:1.5px,color:#311b92
+
+    class A,L inicio
+    class B io
+    class C,F decisao
+    class E,G,H,I,R processo
+    class D,J saida
 ```
 
 **Regras principais**
 
 - A **autenticação** acontece antes de qualquer menu.
 - Login inválido → mostra o aviso e **volta** para a tela de entrada.
-- Cada módulo do menu **devolve** o usuário ao Menu Principal.
+- Cada módulo (Matrícula, Notas, Financeiro) **devolve** o usuário ao Menu Principal.
 - **Só a opção "Sair"** encerra a sessão e chega ao FIM.
 
 ### Resumo das etapas
@@ -80,10 +87,11 @@ flowchart TD
 | 3 | Losango | Credenciais válidas? |
 | 4 | Retângulo | Acesso negado → volta ao login |
 | 5 | Retângulo | Menu principal |
-| 6 | Losango | Qual módulo escolheu? |
+| 6 | Losango | Escolher módulo (1, 2 ou 3) |
 | 7 | Retângulo | Matrícula / Notas / Financeiro |
-| 8 | Retângulo | Encerrar sessão (logout) |
-| 9 | Oval | Fim |
+| 8 | Retângulo | Retornar ao menu (volta ao passo 5) |
+| 9 | Retângulo | Sair → encerrar sessão |
+| 10 | Oval | Fim |
 
 ---
 
@@ -91,31 +99,39 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A([INÍCIO]) --> B[Carregar o jogo (tela inicial)]
-    B --> C{Modo de jogo?}
-    C -->|HISTÓRIA| D[Narrativa → escolher carro → 3 rodadas]
-    C -->|CORRIDA RÁPIDA| E[/Escolher carro e pista/]
+    A([INÍCIO]) --> B[Abrir o jogo<br/>Tela inicial]
+    B --> C{Escolher modo}
+    C -->|HISTÓRIA| D[Narração da história<br/>Escolher o carro]
+    C -->|RÁPIDA| E[/Escolher carro e pista/]
     D --> E
-    E --> F[Contagem regressiva 3-2-1]
-    F --> G[CORRIDA: acelerar, frear, nitro, olhar atrás]
-    G --> H{Cruzou a linha de chegada?}
-    H -->|NÃO| I{Tempo esgotou / perdeu demais?}
-    I -->|SIM| J[DERROTA: mostrar resultado]
-    I -->|NÃO| G
-    H -->|SIM| K[VITÓRIA! Mostrar resultado]
-    K --> L{Modo história?}
-    L -->|SIM| M[Somar pontos do campeonato (faltam rodadas?)]
+    E --> F[Contagem regressiva<br/>3 - 2 - 1]
+    F --> G[CORRIDA<br/>Acelerar · Frear · Nitro ESPAÇO]
+    G --> H{Cruzou a linha<br/>de chegada?}
+    H -->|SIM| I[VITÓRIA<br/>Mostrar resultado]
+    H -->|NÃO| J{Tempo esgotou?}
+    J -->|SIM| K[DERROTA<br/>Mostrar resultado]
+    J -->|NÃO| G
+    I --> L{Modo história?}
+    L -->|SIM| M[Somar pontos do campeonato]
     M --> F
     L -->|NÃO| N([FIM])
-    J --> N
+    K --> N
 
-    style A fill:#ffe6f0,stroke:#1c2340,color:#1c2340
-    style N fill:#ffe6f0,stroke:#1c2340,color:#1c2340
-    style C fill:#fff6d6,stroke:#1c2340,color:#1c2340
-    style H fill:#fff6d6,stroke:#1c2340,color:#1c2340
-    style I fill:#fff6d6,stroke:#1c2340,color:#1c2340
-    style L fill:#fff6d6,stroke:#1c2340,color:#1c2340
-    style E fill:#e4fff2,stroke:#1c2340,color:#1c2340
+    classDef inicio fill:#ffe6f0,stroke:#c2185b,stroke-width:2px,color:#6a1b3a
+    classDef processo fill:#eef2ff,stroke:#3949ab,stroke-width:1.5px,color:#1a237e
+    classDef decisao fill:#fff6d6,stroke:#f9a825,stroke-width:1.5px,color:#5d4037
+    classDef io fill:#e4fff2,stroke:#00897b,stroke-width:1.5px,color:#004d40
+    classDef corrida fill:#ffe6ee,stroke:#c2185b,stroke-width:2px,color:#880e4f
+    classDef resultado fill:#e8f5e9,stroke:#2e7d32,stroke-width:1.5px,color:#1b5e20
+    classDef derrota fill:#ffebee,stroke:#c62828,stroke-width:1.5px,color:#b71c1c
+
+    class A,N inicio
+    class B,D,F,M processo
+    class C,H,J,L decisao
+    class E io
+    class G corrida
+    class I resultado
+    class K derrota
 ```
 
 **Regras principais**
@@ -130,16 +146,17 @@ flowchart TD
 | Etapa | Símbolo | Descrição |
 |---|---|---|
 | 1 | Oval | Início |
-| 2 | Retângulo | Carregar o jogo (tela inicial) |
-| 3 | Losango | Modo de jogo? (rápida / história) |
-| 4 | Paralelogramo | Escolher carro e pista |
-| 5 | Retângulo | Contagem regressiva 3-2-1 |
-| 6 | Retângulo | Corrida (ações do jogador) |
-| 7 | Losango | Cruzou a linha de chegada? |
-| 8 | Losango | Tempo esgotou / perdeu demais? |
-| 9 | Retângulo | Vitória / Derrota — mostrar resultado |
-| 10 | Losango | Modo história? (continuar campeonato) |
-| 11 | Oval | Fim |
+| 2 | Retângulo | Abrir o jogo (tela inicial) |
+| 3 | Losango | Escolher modo (história / rápida) |
+| 4 | Retângulo | Narração da história · escolher o carro |
+| 5 | Paralelogramo | Escolher carro e pista (entrada) |
+| 6 | Retângulo | Contagem regressiva 3-2-1 |
+| 7 | Retângulo | Corrida (acelerar, frear, nitro) |
+| 8 | Losango | Cruzou a linha de chegada? |
+| 9 | Losango | Tempo esgotou? |
+| 10 | Retângulo | Vitória (verde) / Derrota (vermelho) |
+| 11 | Losango | Modo história? (continuar campeonato) |
+| 12 | Oval | Fim |
 
 ---
 
@@ -242,21 +259,27 @@ flowchart LR
 
 ## 🛠️ Como as imagens foram geradas
 
-Os dois PNGs são desenhados por código (sem editor), em
-[`tools/make-flowcharts.cjs`](tools/make-flowcharts.cjs), usando **Jimp**:
+Os dois PNGs são gerados por código (sem editor gráfico) a partir das fontes
+Mermaid em [`fluxogramas/`](fluxogramas/), renderizadas pelo **Mermaid CLI**
+(`mmdc`) com o Chromium/Edge do próprio sistema:
 
 ```bash
-npm install     # instala o jimp
-npm run gerar   # recria docs/*.png
+npm install       # instala @mermaid-js/mermaid-cli + jimp
+npm run gerar     # recria os dois PNGs em docs/
+npm run verificar  # confere as caixas/tipos de cada imagem
 ```
 
-O script desenha cada símbolo na mão (oval, retângulo, losango, paralelogramo),
-as setas com ponta e o texto centralizado — por isso o resultado é sempre igual.
+O tema, a fonte (Arial) e o espaçamento dos nós são definidos no próprio
+arquivo `.mmd` (diretiva `%%{init ...}%%`), então o resultado é sempre igual.
 
 | Arquivo | O que é |
 |---|---|
-| `tools/make-flowcharts.cjs` | Gera os dois fluxogramas em PNG |
-| `tools/check-flowcharts.cjs` | Confere as cores/símbolos de cada imagem |
+| `fluxogramas/01-sistema-escolar.mmd` | Fonte do fluxograma do sistema escolar |
+| `fluxogramas/02-logica-do-jogo.mmd` | Fonte do fluxograma da lógica do jogo |
+| `tools/puppeteer.config.json` | Faz o renderizador usar o Edge do sistema |
+| `tools/mapa.cjs` | Verificação: lista as caixas por tipo/cor |
+| `tools/thumb.cjs` | Verificação: miniatura em ASCII das imagens |
+| `tools/ordem.cjs` | Verificação: ordem horizontal dos nós coloridos |
 
 ---
 
